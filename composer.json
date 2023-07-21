@@ -1,0 +1,10 @@
+{
+    "name": "woutuhr/upsite",
+    "description": "A very simple framework to create websites usinng layouts and components",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Woutuhr\\Upsite\\": "src/"
+        }
+    }
+}
