@@ -24,13 +24,17 @@ class View
 
   public function render()
   {
-    $data = array_merge($this->data, $this->config->getGlobals());
+    $data = array_merge($this->data, [
+      "globals" => $this->config->getGlobals(),
+      "components" => $this->config->getComponents()
+    ]);
+
     foreach($data as $key => $val)
     {
       $$key = $val;
     }
 
-    $content = $this->getViewContent($this->getViewPath($this->viewName). ".php");
+    $content = static::getViewContent($this->getViewPath($this->viewName). ".php", $data, true);
 
     if($this->useLayout)
     {
@@ -40,14 +44,20 @@ class View
     }
   }
 
-  public function getViewContent(string $path)
-  {
-    require $path;
-    return ob_get_clean();
-  }
-
   public function getViewPath(string $path)
   {
     return $this->viewsDir . "/" . $path;
+  }
+
+  public static function getViewContent(string $path, array $data = [], $debug = false)
+  {
+    ob_start();
+    foreach($data as $key => $val)
+    {
+      $$key = $val;
+    }
+
+    require $path;
+    return ob_get_clean();
   }
 }

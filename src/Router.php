@@ -17,11 +17,11 @@ class Router
   {
     $this->request = Request::captureCurrent();
 
-    if(array_key_exists($this->request->path, $this->config->getRoutes()))
+    if($routeConf = $this->getCurrentRoute())
     {
-      $routeConf = $this->config->getRoutes()[$this->request->path];
+      $viewData = array_merge(["title" => $routeConf["title"]], $routeConf["data"] ?? []);
 
-      $view = new View($routeConf["view"], $routeConf, $this->config);
+      $view = new View($routeConf["view"], $viewData, $this->config);
       $view->render();
 
       return;
@@ -30,5 +30,15 @@ class Router
     // TODO add better handeling
     die('404');
 
+  }
+
+  private function getCurrentRoute(): bool|array
+  {
+    if(!array_key_exists($this->request->path, $this->config->getRoutes()))
+    {
+      return false;
+    }
+
+    return $this->config->getRoutes()[$this->request->path];
   }
 }

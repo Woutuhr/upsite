@@ -24,6 +24,13 @@ class Config {
   {
     $configContent = file_get_contents($this->path);
     $config = json_decode($configContent, true);
+
+    $this->globals = new Globals($config["globals"] ?? null);
+    unset($config["globals"]);
+
+    $this->components = new ComponentCollection($config["components"] ?? null);
+    $this->components->load();
+    unset($config["components"]);
     
     foreach($config as $prop => $val)
     {
@@ -44,7 +51,7 @@ class Config {
     return $this->globals;
   }
 
-  public function getComponents()
+  public function getComponents(): ComponentCollection
   {
     return $this->components;
   }
